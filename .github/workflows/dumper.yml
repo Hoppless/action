@@ -1,0 +1,31 @@
+name: Firmware Dumper
+
+on:
+  workflow_dispatch:
+    inputs:
+      link:
+        description: 'Enter Firmare Link'
+        required: true
+
+env:
+  LINK: ${{ github.event.inputs.link }}
+  GH_AUTH: ${{ secrets.GH_AUTH }}
+
+jobs:
+  dumper:
+      runs-on: ubuntu-latest
+
+      steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Start dumping firmware
+        run: |
+             git clone --depth=1 https://github.com/DumprX/DumprX
+             cd DumprX
+             bash setup.sh
+             git config --global user.name "Hoppless"
+             git config --global user.email "hoppless@proton.me"
+             echo "$GH_AUTH" > .github_token
+             bash dumper.sh $LINK
