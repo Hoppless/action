@@ -9,6 +9,7 @@ on:
 
 env:
   LINK: ${{ github.event.inputs.link }}
+  ORG: Hopireika
   GH_AUTH: ${{ secrets.GH_AUTH }}
 
 jobs:
@@ -28,4 +29,5 @@ jobs:
              git config --global user.name "Hoppless"
              git config --global user.email "hoppless@proton.me"
              echo "$GH_AUTH" > .github_token
+             echo "$ORG" > .github_orgname
              bash dumper.sh $LINK
