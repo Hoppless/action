@@ -24,7 +24,7 @@ jobs:
 
       - name: Start dumping firmware
         run: |
-             git clone --depth=1 https://github.com/DumprX/DumprX
+             git clone --depth=1 https://github.com/Hopireika/DumprX
              cd DumprX
              bash setup.sh
              git config --global user.name "Hoppless"
