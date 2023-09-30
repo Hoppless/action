@@ -1,34 +1,44 @@
 name: Firmware Dumper
 
 on:
+  push:
+    branches:
+      - dumper
   workflow_dispatch:
-    inputs:
-      link:
-        description: 'Enter Firmare Link'
-        required: true
 
 env:
   LINK: ${{ github.event.inputs.link }}
-  ORG: Hopireika
+  ORG: hopireika-dump
   GH_AUTH: ${{ secrets.GH_AUTH }}
+  TG_CHAT: "@hopireika_dump"
+  TG_TOKEN: ${{ secrets.TG_TOKEN }}
 
 jobs:
   dumper:
       runs-on: ubuntu-latest
-      container: hoppless/archlinux:latest
 
       steps:
-      - uses: actions/checkout@v3
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
         with:
-          fetch-depth: 0
-
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          overprovision-lvm: true
+          remove-dotnet: true
+          remove-android: true
+          remove-codeql: true
+          remove-haskell: true
+          remove-docker-images: true
+      - uses: actions/checkout@v3
       - name: Start dumping firmware
         run: |
              git clone --depth=1 https://github.com/Hopireika/DumprX
              cd DumprX
-             bash setup.sh
+             ./setup.sh
              git config --global user.name "Hoppless"
              git config --global user.email "hoppless@proton.me"
              echo "$GH_AUTH" > .github_token
              echo "$ORG" > .github_orgname
-             bash dumper.sh $LINK
+             echo "$TG_CHAT" > .tg_chat
+             echo "$TG_TOKEN" > .tg_token
+             ./dumper.sh $(< ../URL.txt)
